@@ -11,8 +11,10 @@ services:
   server:
     build:
       context: .
+      target: development
     ports:
       - 8080:8080
+      - 8000:8000
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
@@ -25,6 +27,10 @@ services:
         condition: service_healthy
     environment:
       - POSTGRES_URL=jdbc:postgresql://db:5432/petclinic
+    develop:
+      watch:
+        - action: rebuild
+          path: .
   db:
     image: postgres
     restart: always

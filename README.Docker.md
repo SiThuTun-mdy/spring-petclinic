@@ -15,5 +15,9 @@ you'll want to build the image for that platform, e.g.:
 
 Then, push it to your registry, e.g. `docker push myregistry.com/myapp`.
 
+Add test stage to run test while building the image.
+
+`docker build -t java-docker-image-test --progress=plain --no-cache --target=test .`
+
 Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
 docs for more detail on building and pushing.

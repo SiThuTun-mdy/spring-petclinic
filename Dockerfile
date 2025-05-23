@@ -9,7 +9,7 @@
 ################################################################################
 
 # Create a stage for resolving and downloading dependencies.
-FROM eclipse-temurin:17-jdk-jammy as deps
+FROM eclipse-temurin:17-jdk-jammy as base
 
 WORKDIR /build
 
@@ -22,6 +22,24 @@ COPY .mvn/ .mvn/
 # re-download packages.
 RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -DskipTests
+
+################################################################################
+
+# Create a stage for running tests.
+FROM base as test
+WORKDIR /build
+COPY ./src src/
+RUN --mount=type=bind,source=pom.xml,target=pom.xml \
+    --mount=type=cache,target=/root/.m2 \
+    ./mvnw test
+
+################################################################################
+
+FROM base as deps
+WORKDIR /build
+RUN --mount=type=bind,source=pom.xml,target=pom.xml \
+    --mount=type=cache,target=/root/.m2 \
+    ./mvnw dependency:go-offline -DskipTests
 
 ################################################################################
 
