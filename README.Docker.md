@@ -19,5 +19,13 @@ Add test stage to run test while building the image.
 
 `docker build -t java-docker-image-test --progress=plain --no-cache --target=test .`
 
+CI/CD pipelines can be set up to build and push your image to a registry
+
+Create Repository variable in GitHub
+DOCKER_USERNAME : docker ID
+
+Create Repository secret in GitHub
+DOCKERHUB_TOKEN : PAT of Docker Hub
+
 Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
 docs for more detail on building and pushing.
