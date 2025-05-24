@@ -21,11 +21,27 @@ Add test stage to run test while building the image.
 
 CI/CD pipelines can be set up to build and push your image to a registry
 
+CI
+
 Create Repository variable in GitHub
 DOCKER_USERNAME : docker ID
 
 Create Repository secret in GitHub
 DOCKERHUB_TOKEN : PAT of Docker Hub
+
+CD
+
+Deployment to k8s ( minikube )
+
+`kubectl apply -f docker-java-kubernetes.yaml`
+
+`kubectl get deployments`
+
+`kubectl get services`
+
+
+
+
 
 Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
 docs for more detail on building and pushing.
