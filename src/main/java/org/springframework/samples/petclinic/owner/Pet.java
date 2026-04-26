@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.NamedEntity;
 
@@ -43,6 +44,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "pets")
+@Audited
 public class Pet extends NamedEntity {
 
 	@Column(name = "birth_date")

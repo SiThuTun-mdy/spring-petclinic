@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.hibernate.envers.Audited;
 import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.model.Person;
 
@@ -42,6 +43,7 @@ import jakarta.xml.bind.annotation.XmlElement;
  */
 @Entity
 @Table(name = "vets")
+@Audited
 public class Vet extends Person {
 
 	@ManyToMany(fetch = FetchType.EAGER)

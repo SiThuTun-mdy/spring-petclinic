@@ -18,6 +18,9 @@ package org.springframework.samples.petclinic.owner;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Session;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -96,6 +99,12 @@ class OwnerController {
 		if (owner.getLastName() == null) {
 			owner.setLastName(""); // empty string signifies broadest possible search
 		}
+
+	   Owner test = owners.findRevisions(11).getLatestRevision().getEntity();
+		System.out.println("Latest Revision = " + test);
+
+		owners.findRevisions(11).forEach(o-> System.out.println(o));
+
 
 		// find owners by last name
 		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, owner.getLastName());

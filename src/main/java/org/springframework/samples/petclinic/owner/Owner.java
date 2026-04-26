@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.envers.Audited;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.util.Assert;
@@ -45,6 +46,7 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Entity
 @Table(name = "owners")
+@Audited
 public class Owner extends Person {
 
 	@Column(name = "address")

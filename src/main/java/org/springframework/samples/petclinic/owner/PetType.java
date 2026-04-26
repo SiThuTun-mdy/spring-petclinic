@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.samples.petclinic.model.NamedEntity;
 
 import jakarta.persistence.Entity;
@@ -25,6 +27,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "types")
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class PetType extends NamedEntity {
 
 }
