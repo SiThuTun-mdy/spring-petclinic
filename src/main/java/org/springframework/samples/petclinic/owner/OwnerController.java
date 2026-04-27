@@ -100,10 +100,10 @@ class OwnerController {
 			owner.setLastName(""); // empty string signifies broadest possible search
 		}
 
-	   Owner test = owners.findRevisions(11).getLatestRevision().getEntity();
-		System.out.println("Latest Revision = " + test);
-
-		owners.findRevisions(11).forEach(o-> System.out.println(o));
+//	   Owner test = owners.findRevisions(11).getLatestRevision().getEntity();
+//		System.out.println("Latest Revision = " + test);
+//
+//		owners.findRevisions(11).forEach(o-> System.out.println(o));
 
 
 		// find owners by last name
