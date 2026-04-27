@@ -15,14 +15,23 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.QueryHint;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.history.RevisionRepository;
+import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository class for <code>Vet</code> domain objects All method names are compliant
@@ -35,15 +44,15 @@ import java.util.Collection;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-public interface VetRepository extends Repository<Vet, Integer> {
+public interface VetRepository extends JpaRepository<Vet, Integer>, RevisionRepository<Vet, Integer, Long> {
 
 	/**
 	 * Retrieve all <code>Vet</code>s from the data store.
 	 * @return a <code>Collection</code> of <code>Vet</code>s
 	 */
-	@Transactional(readOnly = true)
-	@Cacheable("vets")
-	Collection<Vet> findAll() throws DataAccessException;
+//	@Transactional(readOnly = true)
+//	@Cacheable("vets")
+//	Collection<Vet> findAll() throws DataAccessException;
 
 	/**
 	 * Retrieve all <code>Vet</code>s from data store in Pages
@@ -54,5 +63,18 @@ public interface VetRepository extends Repository<Vet, Integer> {
 	@Transactional(readOnly = true)
 	@Cacheable("vets")
 	Page<Vet> findAll(Pageable pageable) throws DataAccessException;
+
+	@Transactional
+	Optional<Vet> findById(@Nonnull Integer vetId);
+
+	@Transactional(readOnly = true)
+	@Query("SELECT sp FROM Specialty sp ORDER BY sp.name")
+	@QueryHints(value = {
+		@QueryHint(name = "org.hibernate.cacheable", value = "true"),
+		@QueryHint(name = "org.hibernate.readOnly", value = "true"),
+		@QueryHint(name = "jakarta.persistence.cache.retrieveMode", value = "USE"),
+		@QueryHint(name = "jakarta.persistence.cache.storeMode", value = "USE")
+	})
+	List<Specialty> findSpecialties();
 
 }

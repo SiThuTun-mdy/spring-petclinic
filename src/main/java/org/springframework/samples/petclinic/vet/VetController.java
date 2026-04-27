@@ -15,16 +15,23 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Juergen Hoeller
@@ -35,10 +42,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 class VetController {
 
+	private static final String VIEWS_VET_CREATE_OR_UPDATE_FORM = "vets/createOrUpdateVetForm";
+
 	private final VetRepository vetRepository;
 
 	public VetController(VetRepository vetRepository) {
 		this.vetRepository = vetRepository;
+	}
+
+	@Transactional
+	@ModelAttribute("vet")
+	public Vet findOwner(@PathVariable(name = "vetId", required = false) Integer vetId) {
+		System.out.println("First call find...");
+		if( vetId != null)
+			this.vetRepository.findById(vetId);
+		System.out.println("First call find done.");
+		return vetId == null ? new Vet()
+			: this.vetRepository.findById(vetId)
+			.orElseThrow(() -> new IllegalArgumentException("Vet not found with id: " + vetId
+				+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
 	}
 
 	@GetMapping("/vets.html")
@@ -73,6 +95,58 @@ class VetController {
 		Vets vets = new Vets();
 		vets.getVetList().addAll(this.vetRepository.findAll());
 		return vets;
+	}
+
+	/**
+	 * Custom handler for displaying an owner.
+	 * @param vetId the ID of the owner to display
+	 * @return a ModelMap with the model attributes for the view
+	 */
+	@Transactional
+	@GetMapping("/vets/{vetId}")
+	public ModelAndView showOwner(@PathVariable("vetId") int vetId) {
+		ModelAndView mav = new ModelAndView("vets/vetDetails");
+		System.out.println("First call find...");
+		this.vetRepository.findById(vetId);
+		System.out.println("First call find done.");
+		Optional<Vet> optionalOwner = this.vetRepository.findById(vetId);
+		Vet vet = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+			"Owner not found with id: " + vetId + ". Please ensure the ID is correct "));
+		mav.addObject(vet);
+		return mav;
+	}
+
+
+	@GetMapping("/vets/{vetId}/edit")
+	public ModelAndView initUpdateOwnerForm(@Valid Vet vet, BindingResult result, @PathVariable("vetId") int vetId) {
+		ModelAndView mav = new ModelAndView(VIEWS_VET_CREATE_OR_UPDATE_FORM);
+		mav.addObject("vet", findOwner(vetId));
+		return mav;
+	}
+
+	@PostMapping("/vets/{vetId}/edit")
+	public String processUpdateOwnerForm(@Valid Vet vet, BindingResult result, @PathVariable("vetId") int ownerId,
+										 RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			redirectAttributes.addFlashAttribute("error", "There was an error in updating the vet.");
+			return VIEWS_VET_CREATE_OR_UPDATE_FORM;
+		}
+
+		if (vet.getId() != ownerId) {
+			result.rejectValue("id", "mismatch", "The vet ID in the form does not match the URL.");
+			redirectAttributes.addFlashAttribute("error", "Vet ID mismatch. Please try again.");
+			return "redirect:/vets/{vetId}/edit";
+		}
+
+		vet.setId(ownerId);
+		this.vetRepository.save(vet);
+		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
+		return "redirect:/vets/{vetId}";
+	}
+
+	@ModelAttribute("specialties")
+	public Collection<Specialty> populatePetTypes() {
+		return this.vetRepository.findSpecialties();
 	}
 
 }

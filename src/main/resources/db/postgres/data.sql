@@ -5,6 +5,20 @@ INSERT INTO vets (first_name, last_name) SELECT 'Rafael', 'Ortega' WHERE NOT EXI
 INSERT INTO vets (first_name, last_name) SELECT 'Henry', 'Stevens' WHERE NOT EXISTS (SELECT * FROM vets WHERE id=5);
 INSERT INTO vets (first_name, last_name) SELECT 'Sharon', 'Jenkins' WHERE NOT EXISTS (SELECT * FROM vets WHERE id=6);
 
+INSERT INTO revision SELECT nextval('revision_id_seq'), (EXTRACT(EPOCH FROM LOCALTIMESTAMP) * 1000)::BIGINT;
+INSERT INTO revision SELECT nextval('revision_id_seq'), (EXTRACT(EPOCH FROM LOCALTIMESTAMP) * 1000)::BIGINT;
+INSERT INTO revision SELECT nextval('revision_id_seq'), (EXTRACT(EPOCH FROM LOCALTIMESTAMP) * 1000)::BIGINT;
+INSERT INTO revision SELECT nextval('revision_id_seq'), (EXTRACT(EPOCH FROM LOCALTIMESTAMP) * 1000)::BIGINT;
+INSERT INTO revision SELECT nextval('revision_id_seq'), (EXTRACT(EPOCH FROM LOCALTIMESTAMP) * 1000)::BIGINT;
+INSERT INTO revision SELECT nextval('revision_id_seq'), (EXTRACT(EPOCH FROM LOCALTIMESTAMP) * 1000)::BIGINT;
+INSERT INTO vets_aud values (1, currval('revision_id_seq'),null, 0) ;
+INSERT INTO vets_aud values (2, currval('revision_id_seq'),null, 0) ;
+INSERT INTO vets_aud values (3, currval('revision_id_seq'),null, 0) ;
+INSERT INTO vets_aud values (4, currval('revision_id_seq'),null, 0) ;
+INSERT INTO vets_aud values (5, currval('revision_id_seq'),null, 0) ;
+INSERT INTO vets_aud values (6, currval('revision_id_seq'),null, 0) ;
+
+
 INSERT INTO specialties (name) SELECT 'radiology' WHERE NOT EXISTS (SELECT * FROM specialties WHERE name='radiology');
 INSERT INTO specialties (name) SELECT 'surgery' WHERE NOT EXISTS (SELECT * FROM specialties WHERE name='surgery');
 INSERT INTO specialties (name) SELECT 'dentistry' WHERE NOT EXISTS (SELECT * FROM specialties WHERE name='dentistry');

@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.envers.Audited;
 
 /**
  * Simple JavaBean domain object representing an person.
@@ -25,6 +26,7 @@ import jakarta.validation.constraints.NotBlank;
  * @author Ken Krebs
  */
 @MappedSuperclass
+@Audited
 public class Person extends BaseEntity {
 
 	@Column(name = "first_name")
